@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>六年级科学选择题测验</title>
+<style>
+/* ====== 全局字体与背景 ====== */
+body {
+  font-family: "ZCOOL KuaiLe", "Microsoft YaHei", sans-serif;
+  font-size: 18px; 
+  background: url('https://img.magnific.com/free-vector/hand-drawn-flat-world-children-s-day-background_23-2149116230.jpg?w=2000') no-repeat center center fixed;
+  background-size: cover;
+  padding: 20px;
+  color: #333;
+  overflow-x: hidden;
+  margin: 0;
+}
+
+/* 主标题 */
+h1 {
+  font-size: 2.4rem;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2c3e50;
+  text-shadow: 2px 2px 0px #fff;
+}
+
+/* ====== 容器样式 (共用) ====== */
+#quiz-container {
+  background: rgba(255,255,255,0.9);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2), 0 0 20px rgba(255,255,255,0.5) inset;
+  backdrop-filter: blur(6px);
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeIn 0.8s forwards;
+  position: relative;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ====== 1. 开始画面样式 ====== */
+#start-screen {
+  text-align: center;
+  padding: 10px;
+}
+
+.input-group {
+  margin-bottom: 25px;
+  text-align: left;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.input-group label {
+  display: block;
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #444;
+}
+
+.input-group input, 
+.input-group select {
+  width: 100%;
+  padding: 14px;
+  font-size: 1.2rem;
+  border: 3px solid #d0d0d0;
+  border-radius: 12px;
+  box-sizing: border-box;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.input-group input:focus, 
+.input-group select:focus {
+  border-color: #7dbbff;
+}
+
+#startBtn {
+  font-size: 1.8rem;
+  padding: 12px 50px;
+  background: #ff9f43;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #e67e22;
+  transition: transform 0.1s;
+  margin-top: 10px;
+}
+
+#startBtn:active {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+
+/* ====== 2. 测验内容样式 (初始隐藏) ====== */
+#quiz-content {
+  display: none;
+}
+
+#student-info-display {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 1rem;
+  color: #666;
+  background: rgba(255,255,255,0.8);
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+#q-index {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #555;
+  margin-top: 10px;
+}
+
+#question {
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+  line-height: 1.5;
+  font-weight: bold;
+}
+
+/* 选项样式 */
+.opt {
+  font-size: 1.6rem;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-radius: 15px;
+  border: 3px solid #e0e0e0;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.opt:hover {
+  transform: translateY(-3px);
+  border-color: #7dbbff;
+  background: #f0f8ff;
+}
+
+.opt.correct { background: #d4edda; border-color: #28a745; color: #155724; }
+.opt.wrong { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+
+/* 底部控制栏 */
+.controls {
+  margin-top: 30px;
+  text-align: center;
+  border-top: 2px dashed #eee;
+  padding-top: 20px;
+}
+
+#nextBtn, #finishBtn {
+  font-size: 1.5rem;
+  padding: 12px 30px;
+  background: #7dbbff;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #2980b9;
+}
+
+#nextBtn:disabled {
+  background: #ccc;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+#finishBtn { display: none; background: #2ecc71; box-shadow: 0 4px 0 #27ae60; }
+
+#restart {
+  font-size: 1.1rem;
+  padding: 8px 16px;
+  margin-left: 15px;
+  background: transparent;
+  border: 2px solid #999;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #666;
+}
+
+.score {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: #e67e22;
+}
+
+#result {
+  margin-top: 20px;
+  font-size: 1.6rem;
+  text-align: center;
+  line-height: 1.6;
+  color: #2c3e50;
+}
+</style>
+</head>
+<body>
+<h1>六年级科学选择题测验</h1>
+
+<div id="quiz-container">
+  
+  <div id="start-screen">
+      <div class="input-group">
+          <label for="student-name">姓名：</label>
+          <input type="text" id="student-name" placeholder="请输入你的名字" autocomplete="off">
+      </div>
+      <div class="input-group">
+          <label for="student-class">班级：</label>
+          <select id="student-class">
+              <option value="">请选择班级</option>
+              <option value="6M">6M</option>
+              <option value="6K">6K</option>
+              <option value="6B">6B</option>
+              <option value="6H">6H</option>
+              <option value="6J">6J</option>
+              <option value="6U">6U</option>
+              <option value="6P">6P</option>
+              <option value="6C">6C</option>
+          </select>
+      </div>
+      <button id="startBtn">开始测验</button>
+  </div>
+
+  <div id="quiz-content">
+      <div id="student-info-display"></div>
+      
+      <div id="q-index">第 <span id="cur">1</span> / <span id="total">0</span> 题</div>
+      <div id="question"></div>
+      <div id="options"></div>
+      
+      <div class="controls">
+        <div class="score" id="score">得分：0</div>
+        <button id="nextBtn" disabled>下一题</button>
+        <button id="finishBtn">完成测验</button>
+        <button id="restart">重做</button>
+      </div>
+      
+      <div id="result"></div>
+  </div>
+
+</div>
+
+<script>
+// ====== 题库数据 ======
+const rawData = `
+1,[2.1.1 人类生殖系统] 在人类生殖系统中，负责产生卵子（卵细胞）和女性激素的器官是什么？ A. 卵巢 B. 睾丸 C. 输卵管 D. 子宫,A
+2,[2.2.1 神经系统] 人体的“中枢神经系统”主要由哪些器官组成？ A. 眼睛与耳朵 B. 大脑与脊髓 C. 心脏与肺 D. 胃与大肠,B
+3,[3.1.1 微生物种类] 酵母菌（Yeast）和霉菌（Mould）属于哪一类微生物？ A. 细菌 B. 病毒 C. 真菌 D. 原生动物,C
+4,[3.1.3 微生物生命过程] 往装有酵母菌、面粉和糖的水中加入温水揉成面团，一段时间后面团膨胀变大。这证实了微生物在进行哪种生命过程？ A. 繁殖 B. 移动 C. 排泄 D. 呼吸（释放二氧化碳气体）,D
+5,[3.1.4 微生物生长条件] 下列哪组环境条件组合“最有利于”微生物快速滋生与繁殖？ A. 含有水分、养分、空气、适宜温度和中性/微酸环境 B. 极度干燥、无空气、强酸性 C. 100℃高温持续沸腾 D. 零下18℃极度冰冻且无养分,A
+6,[3.1.5 微生物的影响] 人类利用哪种微生物来制作发酵食品（如面包、酱油、酸奶）和制造抗生素？ A. 冠状病毒 B. 益生菌与酵母菌 C. 变形虫 D. 恶性疟原虫,B
+7,[4.1.2 动物竞争因素] 同种或不同种动物在同一个栖息地里，通常会因为争夺哪些生存资源而产生“竞争关系”？ A. 阳光与二氧化碳 B. 衣服与玩具 C. 食物、水、配偶、庇护所或地盘 D. 肥料与土壤,C
+8,[4.1.3 动物共生关系] 鳄鱼张开嘴巴让鸻鸟（鳄鱼鸟）啄食其牙缝里的肉渣和寄生虫，鳄鱼获得清洁，鸻鸟获得食物。这种共生关系属于： A. 寄生 B. 共栖 C. 捕食 D. 互利共生,D
+9,[4.2.1 植物竞争因素] 森林里的植物为了生长得更高大，主要会竞争哪四种基本要素？ A. 阳光、水、养分和生长空间 B. 二氧化碳、氧气、落叶、石头 C. 花蜜、果实、花粉、昆虫 D. 风力、温度、磁力、重力,A
+10,[4.2.2 植物共生关系] 寄生在树干上的“莱佛士花”或“绞杀榕”吸取宿主树木的养分和水，最终可能导致宿主树木枯死。这属于什么共生关系？ A. 共栖 B. 寄生 C. 互利共生 D. 竞争,B
+11,[5.1.3 绝种动物] 下列哪组动物已经在地球上完全绝种，无法再找到活体？ A. 马来亚虎与人猿 B. 渡渡鸟、拟斑马与恐龙 C. 杨桃龟与犀鸟 D. 大熊猫与金丝猴,B
+12,[5.1.2 保护与复育] 设立国家公园、森林保护区，以及禁止非法猎杀濒临绝种动物，这些举措属于： A. 破坏生态 B. 商业开发 C. 城市化发展 D. 保护与复育（维持自然界平衡）,D
+13,[6.1.1 力的定义与效应] 压扁铝罐、拉长橡皮筋、改变足球飞行的方向。这些现象说明了什么？ A. 力可以改变物体的形状、移动方向与速度 B. 力只能改变物体的质量 C. 力可以创造能量 D. 物体不需要受力就会自动改变形状,A
+14,[6.2.3 影响摩擦力的因素] 在地面上拉动箱子时，影响箱子与地面之间“摩擦力大小”的主要因素是什么？ A. 箱子的颜色与形状 B. 物体的质量（重量）与接触表面的粗糙程度 C. 当时的空气温度 D. 拉动箱子的时间长短,B
+15,[6.2.4 增加摩擦力应用] 汽车轮胎表面刻有深浅不一的花纹，主要目的是为了： A. 增加美观 B. 减少橡胶材料使用 C. 增加轮胎与路面的摩擦力（防止打滑） D. 降低汽车车速,C
+16,[6.3.2 气压与高度关系] 登山队员攀登高山（如京那巴鲁山山顶）时，会发现高山上的气压比山脚下： A. 相同 B. 高得多 C. 无法测量 D. 低（空气粒子密度稀薄）,D
+17,[7.1.3 速度计算] 一辆小汽车在2小时内行驶了 160 公里，这辆小汽车的平均速度是多少？ A. 80 公里/小时（km/h） B. 160 公里/小时（km/h） C. 320 公里/小时（km/h） D. 40 公里/小时（km/h）,A
+18,[7.1.1 速度单位] 测量蜗牛或昆虫爬行速度时，最适合使用的标准速度单位是什么？ A. 公里/小时（km/h） B. 厘米/秒（cm/s） C. 光年/年 D. 米/小时（m/h）,B
+19,[8.1.1 食物变质特征] 面包表面长出绿黑色斑点、牛奶发酸凝块、肉类变黏发臭，这些都是食物变质的特征。导致食物变质的主要原因是什么？ A. 阳光照射太多 B. 包装袋太厚 C. 微生物（细菌和真菌）的滋生与繁殖 D. 存放时间太短,C
+20,[8.2.2 食物保存原理] 巴氏杀菌法（Pasteurization，常用于牛奶和果汁保存）的原理是什么？ A. 彻底抽干牛奶中的水分 B. 加盐使细菌脱水 C. 用高浓度糖水浸泡 D. 加热至特定温度（约60℃-72℃）维持片刻杀灭有害微生物，再迅速冷却,D
+21,[8.2.5 结合食物保存法] 制造“咸鱼”时，通常结合使用了哪几种食物保存法？ A. 盐腌、干藏（晒干）与真空包装 B. 巴氏杀菌与冷冻 C. 上蜡与装罐 D. 煮沸与冷藏,A
+22,[9.1.2 废物的分类] 下列哪组废物属于“可生物降解”（能被微生物分解）的废物？ A. 塑料瓶与玻璃瓶 B. 菜叶、果皮与枯树叶 C. 废弃金属罐与废电池 D. 泡沫塑料盒（Styrofoam）,B
+23,[9.1.5 5R垃圾减量原则] 购物时自带环保购物袋、拒绝使用一次性塑料吸管，这体现了5R原则中的哪一项？ A. Recycle（再循环） B. Repair（维修） C. Refuse（拒绝）/ Reduce（减量） D. Reuse（再使用）,C
+24,[10.1.1 月食形成条件] 当太阳、地球、月球排列成一条直线，且地球处于中间阻挡了照射到月球上的阳光时，会发生什么天体现象？ A. 日食 B. 流星雨 C. 新月 D. 月食,D
+25,[10.1.2 日食形成条件] 发生“日食”自然现象时，三者的相对位置关系是什么？ A. 月球运行到太阳和地球之间（太阳 - 月球 - 地球呈一直线） B. 地球运行到太阳和月球之间 C. 太阳运行到地球和月球之间 D. 月球绕着木星公转,A
+26,[10.1.3 天体现象的光学原理] 日食和月食现象的形成，主要是由于光的什么特性？ A. 光的反射 B. 光的折射 C. 光沿直线传播且被不透明的天体阻挡形成影子 D. 光的色散,C
+27,[11.1.2 银河系与太阳系] 太阳系（Solar System）包含太阳和八大行星，它位于宇宙中的哪一个星系里？ A. 仙女座星系 B. 麦哲伦星云 C. 猎户座星云 D. 银河系（Milky Way / Bimasakti）,D
+28,[12.1.3 影响平稳性的因素] 降低建筑物的重心高度并增大其底部面积，可以显著提高建筑物的什么属性？ A. 平稳性（Stability） B. 坚固性（Strength） C. 吸水性 D. 导电性,A
+29,[12.1.4 影响坚固性的因素] 桥梁结构中常大量应用“三角形框架”和“拱形”设计，这主要是为了增加建筑物的： A. 柔韧度 B. 坚固性（Strength） C. 透明度 D. 导热度,B
+30,[13.1.3 工艺的利与弊] 科技与工艺的发展给人类带来了极大的便利，但如果过度或不当使用也会带来弊端。下列哪项属于工艺带来的“弊端”？ A. 交通工具缩短了出行时间 B. 医疗科技延长了人类寿命 C. 工厂排放大量废气废水造成严重的环境污染 D. 互联网使通讯更加快捷,C
+`;
+
+// ====== 数据解析 ======
+const data = rawData.trim().split("\n").map(line=>{
+  const parts = line.split(",");
+  const answer = parts.pop().trim().toUpperCase();
+  const qid = parts.shift();
+  const full = parts.join(",").trim();
+
+  const optStart = full.indexOf("A.");
+  const qtext = full.slice(0, optStart).trim();
+  const optRaw = full.slice(optStart);
+
+  const optParts = optRaw.split(/\s(?=[A-D]\.\s)/).map(s=>s.trim());
+  const opts = optParts.map(op => op.replace(/^[A-D]\.\s*/, ""));
+  while (opts.length < 4) opts.push("(缺失)");
+
+  return { q: qtext, options: opts, answer: {A:0,B:1,C:2,D:3}[answer] };
+});
+
+// ====== 全局变量 ======
+let current = 0;
+let score = 0;
+let answered = false;
+let studentName = "";
+let studentClass = "";
+
+// ====== DOM 元素 ======
+const startScreen = document.getElementById('start-screen');
+const quizContent = document.getElementById('quiz-content');
+const startBtn = document.getElementById('startBtn');
+const nameInput = document.getElementById('student-name');
+const classInput = document.getElementById('student-class');
+const infoDisplay = document.getElementById('student-info-display');
+
+document.getElementById('total').textContent = data.length;
+
+// ====== 1. 开始逻辑 ======
+startBtn.addEventListener('click', () => {
+    const sName = nameInput.value.trim();
+    const sClass = classInput.value;
+
+    if (!sName) {
+        alert("请填写你的名字！");
+        return;
+    }
+    if (!sClass) {
+        alert("请选择你的班级！");
+        return;
+    }
+
+    // 保存信息
+    studentName = sName;
+    studentClass = sClass;
+
+    // 切换界面
+    startScreen.style.display = 'none';
+    quizContent.style.display = 'block';
+    
+    // 显示学生信息
+    infoDisplay.textContent = `${studentName} (${studentClass})`;
+
+    // 加载第一题
+    loadQuestion();
+});
+
+// ====== 2. 测验逻辑 ======
+function loadQuestion(){
+  answered = false;
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('finishBtn').style.display = 'none';
+  document.getElementById('result').textContent = '';
+  
+  const q = data[current];
+  document.getElementById('question').textContent = q.q;
+  document.getElementById('cur').textContent = current + 1;
+
+  const optsDiv = document.getElementById('options');
+  optsDiv.innerHTML = '';
+  
+  q.options.forEach((opt,i)=>{
+    const div = document.createElement('div');
+    div.className='opt';
+    div.textContent = opt;
+    div.addEventListener('click',()=>selectOption(div,i));
+    optsDiv.appendChild(div);
+  });
+}
+
+function selectOption(el, index){
+  if(answered) return;
+  answered = true;
+  const q = data[current];
+  const all = document.querySelectorAll('.opt');
+  
+  all.forEach((d,i)=>{ if(i === q.answer) d.classList.add('correct'); });
+  
+  if(index !== q.answer) {
+      el.classList.add('wrong');
+  } else {
+      score++;
+  }
+  
+  document.getElementById('score').textContent = '得分：' + score;
+
+  if(current === data.length - 1){
+    document.getElementById('finishBtn').style.display = 'inline-block';
+    document.getElementById('nextBtn').style.display = 'none';
+  } else {
+    document.getElementById('nextBtn').disabled = false;
+    document.getElementById('nextBtn').style.display = 'inline-block';
+  }
+}
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  current++;
+  loadQuestion();
+});
+
+document.getElementById('finishBtn').addEventListener('click', () => {
+  const resultDiv = document.getElementById('result');
+  resultDiv.innerHTML = `
+      <div style="padding:20px; border:2px dashed #7dbbff; border-radius:15px; margin-top:20px;">
+          <p>🎉 恭喜 <strong>${studentName} (${studentClass})</strong>！</p>
+          <p>你完成了测验</p>
+          <p style="font-size:2.5rem; color:#e67e22; margin:10px 0;">${score} / ${data.length}</p>
+          <p>继续努力，让自己更棒！🌟</p>
+      </div>
+  `;
+  document.getElementById('finishBtn').style.display = 'none';
+});
+
+document.getElementById('restart').addEventListener('click', () => {
+  if(confirm('确定重做测验吗？成绩将归零。')){
+    current = 0;
+    score = 0;
+    document.getElementById('score').textContent = '得分：0';
+    document.getElementById('nextBtn').style.display = 'inline-block';
+    document.getElementById('nextBtn').disabled = true;
+    document.getElementById('result').innerHTML = ''; // 清空结果
+    loadQuestion();
+  }
+});
+</script>
+</body>
+</html>
